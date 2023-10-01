@@ -3,13 +3,19 @@
 #include "test_framework/fmt_print.h"
 #include "test_framework/generic_test.h"
 #include "test_framework/serialization_traits.h"
+
+using namespace std;
 struct Rect {
   int x, y, width, height;
 };
 
-Rect IntersectRectangle(const Rect& r1, const Rect& r2) {
-  // TODO - you fill in here.
-  return {0, 0, 0, 0};
+Rect IntersectRectangle(const Rect& R1, const Rect& R2) {
+  if (!IsIntersect(R1, R2)) {
+    return  (0,0,-1,-1); // No Intesection
+  }
+  return (max(R1.x, R2.x), max(R1.y, R2.y), 
+  min (R1.x + R1.width, R2.x + R2.width) - max(R1.x, R2.x),
+  min (R1.y + R1.height, R2.y + R2.height) - max(R1.y, R2.y));
 }
 bool operator==(const Rect& r1, const Rect& r2) {
   return std::tie(r1.x, r1.y, r1.width, r1.height) ==
