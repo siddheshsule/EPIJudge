@@ -4,27 +4,28 @@
 using std::vector;
 vector<int> Multiply(vector<int> num1, vector<int> num2) {
   // TODO - you fill in here.
-  int n = num1.size();
-  int m = num2.size();
-  vector<int> result(n+m,0);
-  for (int i = n-1; i >= 0; --i) {
-    for (int j = m-1; j >=0; --j) {
-      int mul = (num1[i] - '0') * (num2[j] - '0');
-      int sum = mul + result[i + j + 1];
+  const int sign = num1.front() < 0 ^ num2.front() < 0 ? -1 : 1;
+  num1.front() = abs(num1.front()); 
+  num2.front() = abs(num2.front());
+  int j = num2.size() - 1;
 
-      result[i + j] += sum / 10;
-      result[i + j + 1] = sum % 10; 
-
-    }    
+  vector<int> result(num1.size() + num2.size() , 0); // Initializing a vector with number of zeroes equal to total sizes of two input vectorsa
+  for (int i = num1.size() - 1 ; i >= 0; i--) {    
+    result[i + j + 1] += num1[i] * num2[j];
+    result[i + j] += result[i +j + 1] / 10;
+    result[i + j + 1] %= 10;    
+    j--;
   }
 
-  int i = 0;
-  while (i < n +m -1 && result[i] == 0) {
-    i++;
-  }
+  // Removing leading zeroes
+  result = {
+    find_if_not(result.begin(), result.end(),[](int a) {return a == 0;}), end(result)};
 
-  vector<int> finalResult(result.begin() + i, result.end()); 
-  return finalResult;
+  if (result.empty()) {
+    return {0};
+  }
+  result.front() *= sign;
+  return result;  
 }
 
 int main(int argc, char* argv[]) {
